@@ -3,7 +3,14 @@
 import { useTheme } from "@/hooks/useTheme";
 
 export function ThemeToggle() {
-  const { theme, toggleTheme } = useTheme();
+  const { theme, toggleTheme, mounted } = useTheme();
+
+  // Render a placeholder during SSR/SSG to avoid hydration mismatch
+  if (!mounted) {
+    return (
+      <div className="p-2 w-9 h-9" aria-hidden="true" />
+    );
+  }
 
   return (
     <button

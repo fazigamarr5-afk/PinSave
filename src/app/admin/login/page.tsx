@@ -18,20 +18,33 @@ export default function AdminLoginPage() {
     setError(null);
     setLoading(true);
 
-    const supabase = createClient();
-    const { error: authError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    try {
+      const supabase = createClient();
+      const { data, error: authError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-    if (authError) {
-      setError("Invalid email or password.");
+      if (authError) {
+        console.error("Auth error:", authError);
+        setError(authError.message || "Invalid email or password.");
+        setLoading(false);
+        return;
+      }
+
+      if (!data.session) {
+        setError("Login succeeded but no session was created. Please try again.");
+        setLoading(false);
+        return;
+      }
+
+      // Force a full page reload to ensure cookies are set and the layout picks up the session
+      window.location.href = "/admin";
+    } catch (err: any) {
+      console.error("Login exception:", err);
+      setError("Something went wrong. Please try again.");
       setLoading(false);
-      return;
     }
-
-    router.push("/admin");
-    router.refresh();
   };
 
   return (
@@ -65,7 +78,7 @@ export default function AdminLoginPage() {
           />
 
           {error && (
-            <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+            <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 p-3 rounded-lg">{error}</p>
           )}
 
           <Button

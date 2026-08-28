@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { useEffect } from "react";
+import { useAuth } from "@/lib/supabase/client";
 
 const sidebarLinks = [
   {
@@ -61,41 +61,22 @@ export default function AdminLayout({
 }) {
   const pathname = usePathname();
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
-  const [authorized, setAuthorized] = useState(false);
+  const { user, loading: authLoading } = useAuth();
 
   useEffect(() => {
-    // Skip auth check on login page
-    if (pathname === "/admin/login") {
-      setLoading(false);
-      setAuthorized(true);
-      return;
+    if (authLoading) return;
+    if (pathname === "/admin/login") return;
+    if (!user) {
+      router.push("/admin/login");
     }
-
-    const checkAuth = async () => {
-      const supabase = createClient();
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (!user) {
-        router.push("/admin/login");
-        return;
-      }
-
-      setAuthorized(true);
-      setLoading(false);
-    };
-
-    checkAuth();
-  }, [pathname, router]);
+  }, [authLoading, user, pathname, router]);
 
   // Login page renders without admin chrome
   if (pathname === "/admin/login") {
     return <>{children}</>;
   }
 
-  if (loading) {
+  if (authLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="w-8 h-8 border-3 border-surface-200 dark:border-surface-700 rounded-full" />
@@ -104,7 +85,7 @@ export default function AdminLayout({
     );
   }
 
-  if (!authorized) return null;
+  if (!user && pathname !== "/admin/login") return null;
 
   return (
     <div className="flex min-h-screen">

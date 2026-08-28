@@ -35,7 +35,7 @@ export default function AdminSettingsPage() {
 
       if (data && data.length > 0) {
         const parsed: Partial<Settings> = {};
-        data.forEach((row) => {
+        data.forEach((row: { key: string; value: string }) => {
           if (row.key in defaultSettings) {
             parsed[row.key as keyof Settings] = row.value;
           }
