@@ -52,10 +52,7 @@ export function DownloaderResult({ results }: DownloaderResultProps) {
             </div>
             {result.url ? (
               <a
-                href={result.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                download
+                href={`/api/file?url=${encodeURIComponent(result.url)}&filename=${encodeURIComponent(result.filename || `pinterest-${result.type}`)}`}
                 className="flex-shrink-0 ml-4 px-4 py-2 text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 rounded-lg transition-colors"
               >
                 Save
