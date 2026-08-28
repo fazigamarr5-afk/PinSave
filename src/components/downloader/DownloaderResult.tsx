@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import type { DownloadResult } from "@/types";
 
 interface DownloaderResultProps {
@@ -7,7 +8,42 @@ interface DownloaderResultProps {
 }
 
 export function DownloaderResult({ results }: DownloaderResultProps) {
+  const [downloading, setDownloading] = useState<Record<number, boolean>>({});
+
   if (results.length === 0) return null;
+
+  const handleDownload = async (result: DownloadResult, index: number) => {
+    if (!result.url) return;
+    setDownloading((prev) => ({ ...prev, [index]: true }));
+
+    try {
+      const filename = result.filename || `pinterest-${result.type}`;
+      const proxyUrl = `/api/file?url=${encodeURIComponent(result.url)}&filename=${encodeURIComponent(filename)}`;
+
+      const response = await fetch(proxyUrl);
+      if (!response.ok) throw new Error("Download failed");
+
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = blobUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 5000);
+    } catch {
+      // Fallback: open in new tab
+      window.open(
+        `/api/file?url=${encodeURIComponent(result.url)}&filename=${encodeURIComponent(result.filename || `pinterest-${result.type}`)}`,
+        "_blank"
+      );
+    } finally {
+      setDownloading((prev) => ({ ...prev, [index]: false }));
+    }
+  };
 
   return (
     <div className="w-full max-w-2xl mx-auto mt-6">
@@ -51,12 +87,13 @@ export function DownloaderResult({ results }: DownloaderResultProps) {
               </div>
             </div>
             {result.url ? (
-              <a
-                href={`/api/file?url=${encodeURIComponent(result.url)}&filename=${encodeURIComponent(result.filename || `pinterest-${result.type}`)}`}
-                className="flex-shrink-0 ml-4 px-4 py-2 text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 rounded-lg transition-colors"
+              <button
+                onClick={() => handleDownload(result, index)}
+                disabled={downloading[index]}
+                className="flex-shrink-0 ml-4 px-4 py-2 text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
               >
-                Save
-              </a>
+                {downloading[index] ? "Saving..." : "Save"}
+              </button>
             ) : (
               <span className="flex-shrink-0 ml-4 px-4 py-2 text-sm font-medium text-surface-400 bg-surface-100 rounded-lg dark:bg-surface-800 dark:text-surface-500">
                 Unavailable
