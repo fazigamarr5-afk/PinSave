@@ -31,6 +31,7 @@ export default function EditPage({ params }: { params: Promise<{ slug: string }>
   const [content, setContent] = useState<PageContent>(emptyContent);
   const [seoTitle, setSeoTitle] = useState("");
   const [seoDescription, setSeoDescription] = useState("");
+  const [seoKeywords, setSeoKeywords] = useState("");
   const [status, setStatus] = useState("published");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -47,6 +48,7 @@ export default function EditPage({ params }: { params: Promise<{ slug: string }>
           setContent({ ...emptyContent, ...data.content });
           setSeoTitle(data.seo_title || "");
           setSeoDescription(data.seo_description || "");
+          setSeoKeywords(data.seo_keywords || "");
           setStatus(data.status);
         }
         setLoading(false);
@@ -96,8 +98,8 @@ export default function EditPage({ params }: { params: Promise<{ slug: string }>
   const handleSave = async () => {
     setSaving(true); setError(null); setSaved(false);
     const supabase = createClient();
-    const { error: e } = await supabase.from("pages").upsert(
-      { slug, title, content, seo_title: seoTitle, seo_description: seoDescription, status, updated_at: new Date().toISOString() },
+    const      { error: e } = await supabase.from("pages").upsert(
+      { slug, title, content, seo_title: seoTitle, seo_description: seoDescription, seo_keywords: seoKeywords, status, updated_at: new Date().toISOString() },
       { onConflict: "slug" }
     );
     if (e) setError(e.message); else { setSaved(true); setTimeout(() => setSaved(false), 3000); }
@@ -226,6 +228,13 @@ export default function EditPage({ params }: { params: Promise<{ slug: string }>
             <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1">Meta Description</label>
             <textarea value={seoDescription} onChange={(e) => setSeoDescription(e.target.value)} rows={3}
               className="w-full px-3 py-2 rounded-lg border bg-white border-surface-300 text-surface-900 dark:bg-surface-900 dark:border-surface-700 dark:text-white text-sm" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1">SEO Keywords</label>
+            <textarea value={seoKeywords} onChange={(e) => setSeoKeywords(e.target.value)} rows={3}
+              placeholder="pinterest downloader, pinterest video download, save pinterest"
+              className="w-full px-3 py-2 rounded-lg border bg-white border-surface-300 text-surface-900 dark:bg-surface-900 dark:border-surface-700 dark:text-white text-sm" />
+            <p className="mt-1 text-xs text-surface-400">Comma-separated keywords for search engines</p>
           </div>
           <div>
             <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1">Status</label>
