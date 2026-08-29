@@ -12,11 +12,10 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: "SavePin — Pinterest Video, Image & GIF Downloader",
+    default: "Pinterest Downloader — Download Videos, Images & GIFs Free | SavePin",
     template: "%s | SavePin",
   },
-  description:
-    "Download Pinterest videos, images, and GIFs. Free, simple, and fast Pinterest media downloader — no account required.",
+  description: "Free Pinterest downloader — save videos, images, and GIFs in HD. No watermark, no login. Works on iPhone, Android, and PC. Download now.",
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL || "https://savepin.vercel.app"
   ),
