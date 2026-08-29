@@ -9,6 +9,75 @@ interface RichTextEditorProps {
   placeholder?: string;
 }
 
+// Convert HTML from MS Word/Google Docs to Markdown
+function htmlToMarkdown(html: string): string {
+  let md = html;
+
+  // Decode HTML entities
+  md = md.replace(/&nbsp;/g, " ");
+  md = md.replace(/&amp;/g, "&");
+  md = md.replace(/&lt;/g, "<");
+  md = md.replace(/&gt;/g, ">");
+  md = md.replace(/&quot;/g, '"');
+  md = md.replace(/&#39;/g, "'");
+
+  // Block elements — add newlines
+  md = md.replace(/<br\s*\/?>/gi, "\n");
+  md = md.replace(/<\/p>/gi, "\n\n");
+  md = md.replace(/<\/div>/gi, "\n");
+  md = md.replace(/<\/h1>/gi, "\n\n");
+  md = md.replace(/<\/h2>/gi, "\n\n");
+  md = md.replace(/<\/h3>/gi, "\n\n");
+  md = md.replace(/<\/li>/gi, "\n");
+  md = md.replace(/<\/tr>/gi, "\n");
+  md = md.replace(/<\/td>/gi, " | ");
+  md = md.replace(/<hr[^>]*>/gi, "\n---\n");
+  md = md.replace(/<li[^>]*>/gi, "- ");
+
+  // Headings
+  md = md.replace(/<h1[^>]*>/gi, "# ");
+  md = md.replace(/<h2[^>]*>/gi, "## ");
+  md = md.replace(/<h3[^>]*>/gi, "### ");
+  md = md.replace(/<h4[^>]*>/gi, "#### ");
+
+  // Bold and italic
+  md = md.replace(/<(strong|b)[^>]*>([\s\S]*?)<\/(strong|b)>/gi, "**$2**");
+  md = md.replace(/<(em|i)[^>]*>([\s\S]*?)<\/(em|i)>/gi, "*$2*");
+  md = md.replace(/<(strong|b)>([\s\S]*?)<\/(strong|b)>/gi, "**$2**");
+
+  // Links
+  md = md.replace(/<a[^>]*href="([^"]*)"[^>]*>([\s\S]*?)<\/a>/gi, "[$2]($1)");
+
+  // Images
+  md = md.replace(/<img[^>]*src="([^"]*)"[^>]*alt="([^"]*)"[^>]*\/?>/gi, "![$2]($1)");
+  md = md.replace(/<img[^>]*src="([^"]*)"[^>]*\/?>/gi, "![]($1)");
+
+  // Inline code
+  md = md.replace(/<code[^>]*>([\s\S]*?)<\/code>/gi, "`$1`");
+
+  // Blockquotes
+  md = md.replace(/<blockquote[^>]*>([\s\S]*?)<\/blockquote>/gi, (_, content) => {
+    return content
+      .split("\n")
+      .map((line: string) => "> " + line.trim())
+      .join("\n");
+  });
+
+  // Remove remaining HTML tags
+  md = md.replace(/<[^>]+>/g, "");
+
+  // Decode remaining entities
+  md = md.replace(/&amp;/g, "&");
+  md = md.replace(/&lt;/g, "<");
+  md = md.replace(/&gt;/g, ">");
+
+  // Clean up excessive newlines
+  md = md.replace(/\n{3,}/g, "\n\n");
+  md = md.trim();
+
+  return md;
+}
+
 function insertMarkdown(
   textarea: HTMLTextAreaElement,
   before: string,
@@ -27,10 +96,7 @@ function insertMarkdown(
     after +
     textarea.value.substring(end);
 
-  // Save scroll position
   const scrollTop = textarea.scrollTop;
-
-  // Set the new value
   const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
     window.HTMLTextAreaElement.prototype,
     "value"
@@ -38,7 +104,6 @@ function insertMarkdown(
   nativeInputValueSetter?.call(textarea, newText);
   textarea.dispatchEvent(new Event("input", { bubbles: true }));
 
-  // Restore scroll and cursor position
   const newStart = start + before.length;
   const newEnd = newStart + text.length;
   requestAnimationFrame(() => {
@@ -57,7 +122,6 @@ function insertLinePrefix(
   const lineStart = textarea.value.lastIndexOf("\n", start - 1) + 1;
   const text = textarea.value.substring(lineStart, start);
 
-  // If line already starts with prefix, remove it
   if (text.startsWith(prefix)) {
     const newText =
       textarea.value.substring(0, lineStart) +
@@ -200,6 +264,46 @@ export function RichTextEditor({
     []
   );
 
+  // Handle paste from MS Office / Google Docs — convert HTML to Markdown
+  const handlePaste = useCallback(
+    (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+      const html = e.clipboardData.getData("text/html");
+      const plainText = e.clipboardData.getData("text/plain");
+
+      // If pasting HTML (from Word, Google Docs, etc.), convert to Markdown
+      if (html && html.trim() !== plainText.trim()) {
+        e.preventDefault();
+        const markdown = htmlToMarkdown(html);
+        const textarea = textareaRef.current;
+        if (!textarea) return;
+
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const newText =
+          textarea.value.substring(0, start) +
+          markdown +
+          textarea.value.substring(end);
+
+        const scrollTop = textarea.scrollTop;
+        const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+          window.HTMLTextAreaElement.prototype,
+          "value"
+        )?.set;
+        nativeInputValueSetter?.call(textarea, newText);
+        textarea.dispatchEvent(new Event("input", { bubbles: true }));
+
+        const newCursor = start + markdown.length;
+        requestAnimationFrame(() => {
+          textarea.scrollTop = scrollTop;
+          textarea.focus();
+          textarea.setSelectionRange(newCursor, newCursor);
+        });
+      }
+      // Plain text paste — let browser handle it normally
+    },
+    []
+  );
+
   return (
     <div className="rounded-lg border border-surface-300 dark:border-surface-700 overflow-hidden focus-within:border-brand-500 focus-within:ring-2 focus-within:ring-brand-500/20 transition-all">
       {/* Toolbar */}
@@ -218,6 +322,7 @@ export function RichTextEditor({
               key={btn.title}
               type="button"
               title={btn.title}
+              onMouseDown={(e) => e.preventDefault()}
               onClick={() => handleClick(btn.action)}
               className={`px-2 py-1 text-sm text-surface-600 dark:text-surface-400 hover:bg-surface-200 dark:hover:bg-surface-700 hover:text-surface-900 dark:hover:text-white rounded transition-colors ${btn.className}`}
             >
@@ -227,20 +332,22 @@ export function RichTextEditor({
         })}
       </div>
 
-      {/* Textarea */}
+      {/* Textarea — tall with proper scrolling */}
       <textarea
         ref={textareaRef}
         value={value}
         onChange={(e) => onChange(e.target.value)}
+        onPaste={handlePaste}
         rows={rows}
         placeholder={placeholder}
-        className="w-full px-4 py-3 text-base bg-white text-surface-900 placeholder:text-surface-400 border-0 focus:outline-none dark:bg-surface-900 dark:text-surface-100 dark:placeholder:text-surface-500 resize-y font-mono text-sm leading-relaxed"
+        className="w-full px-4 py-3 bg-white text-surface-900 placeholder:text-surface-400 border-0 focus:outline-none dark:bg-surface-900 dark:text-surface-100 dark:placeholder:text-surface-500 font-mono text-sm leading-relaxed"
+        style={{ minHeight: "400px", resize: "vertical" }}
       />
 
       {/* Help text */}
       <div className="px-3 py-1.5 bg-surface-50 dark:bg-surface-800 border-t border-surface-200 dark:border-surface-700">
         <p className="text-xs text-surface-400 dark:text-surface-500">
-          Supports <strong>Markdown</strong>: **bold**, *italic*, ## headings, - lists, &gt; quotes, [links](url)
+          Supports <strong>Markdown</strong>: **bold**, *italic*, ## headings, - lists, &gt; quotes, [links](url) — paste from Word preserves formatting
         </p>
       </div>
     </div>
