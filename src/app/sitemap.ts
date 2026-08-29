@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { createClient } from "@supabase/supabase-js";
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://savepin.vercel.app";
 
@@ -34,7 +35,7 @@ const staticPages = [
   { path: "/contact", priority: 0.4, changeFrequency: "monthly" as const },
 ];
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date().toISOString();
 
   const staticEntries: MetadataRoute.Sitemap = staticPages.map((page) => ({
@@ -44,14 +45,29 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: page.priority,
   }));
 
-  // In production, fetch blog posts from Supabase and add them:
-  // const blogPosts = await getPublishedPosts();
-  // const blogEntries = blogPosts.map(post => ({
-  //   url: `${BASE_URL}/blog/${post.slug}`,
-  //   lastModified: post.updated_at,
-  //   changeFrequency: "monthly" as const,
-  //   priority: 0.6,
-  // }));
+  // Fetch published blog posts from Supabase
+  let blogEntries: MetadataRoute.Sitemap = [];
+  try {
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
+    const { data: posts } = await supabase
+      .from("posts")
+      .select("slug, updated_at")
+      .eq("status", "published");
 
-  return [...staticEntries /* ...blogEntries */];
+    if (posts) {
+      blogEntries = posts.map((post) => ({
+        url: `${BASE_URL}/blog/${post.slug}`,
+        lastModified: post.updated_at || now,
+        changeFrequency: "monthly" as const,
+        priority: 0.6,
+      }));
+    }
+  } catch {
+    // If Supabase fails, return static entries only
+  }
+
+  return [...staticEntries, ...blogEntries];
 }

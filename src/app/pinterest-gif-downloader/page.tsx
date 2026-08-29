@@ -9,7 +9,13 @@ import { ErrorState } from "@/components/downloader/ErrorState";
 import { FAQAccordion } from "@/components/faq/FAQAccordion";
 import { useDownloader } from "@/hooks/useDownloader";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
-import { WebApplicationJsonLd, FAQJsonLd } from "@/components/seo/JsonLd";
+import {
+  WebApplicationJsonLd,
+  FAQJsonLd,
+  HowToJsonLd,
+  BreadcrumbJsonLd,
+  OrganizationJsonLd,
+} from "@/components/seo/JsonLd";
 
 const faqs = [
   {
@@ -20,18 +26,25 @@ const faqs = [
   {
     question: "What if the GIF is actually a video?",
     answer:
-      "Some Pinterest pins that appear to be GIFs are actually short video loops. SavePin will detect and download the appropriate format — typically MP4 for these.",
+      "Some Pinterest pins that appear to be GIFs are actually short video loops. SavePin will detect and download the appropriate format.",
   },
   {
     question: "Can I convert a Pinterest video to GIF?",
     answer:
-      "SavePin downloads the content in its original format. We do not currently offer video-to-GIF conversion, but you can use a separate tool for that.",
+      "SavePin downloads the content in its original format. We do not currently offer video-to-GIF conversion.",
   },
   {
     question: "Why is my download an MP4 instead of a GIF?",
     answer:
-      "Pinterest often serves short animated content as MP4 video files rather than GIFs. This is normal and results in smaller file sizes with better quality.",
+      "Pinterest often serves short animated content as MP4 video files rather than GIFs. This results in smaller file sizes with better quality.",
   },
+];
+
+const howToSteps = [
+  { name: "Find the GIF", text: "Find a GIF on Pinterest. Search for topics like reactions, memes, or animations to discover GIF content." },
+  { name: "Copy the link", text: "Copy the pin URL from your browser. It should be a public Pinterest link." },
+  { name: "Paste and download", text: "Paste the URL above and click Download. We will find the GIF or animated content on the page." },
+  { name: "Save the file", text: "Save the file. Note that some GIFs may download as MP4 — this is how Pinterest serves short animated content." },
 ];
 
 const relatedTools = [
@@ -53,8 +66,20 @@ export default function PinterestGifDownloaderPage() {
 
   return (
     <>
+      <OrganizationJsonLd />
       <WebApplicationJsonLd />
       <FAQJsonLd faqs={faqs} />
+      <HowToJsonLd
+        name="How to Download Pinterest GIFs"
+        description="Step-by-step guide to download GIFs from Pinterest using SavePin."
+        steps={howToSteps}
+      />
+      <BreadcrumbJsonLd
+        items={[
+          { name: "Home", url: "/" },
+          { name: "GIF Downloader", url: "/pinterest-gif-downloader" },
+        ]}
+      />
 
       <Container>
         <div className="py-12 max-w-3xl mx-auto">
@@ -99,63 +124,15 @@ export default function PinterestGifDownloaderPage() {
               How to download Pinterest GIFs
             </h2>
             <ol className="space-y-4 text-surface-600 dark:text-surface-400 leading-relaxed">
-              <li className="flex gap-3">
-                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-brand-100 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300 text-xs font-bold flex items-center justify-center">
-                  1
-                </span>
-                <span>
-                  Find a GIF on Pinterest. Search for topics like
-                  &quot;reactions&quot;, &quot;memes&quot;, or &quot;animations&quot;
-                  to discover GIF content.
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-brand-100 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300 text-xs font-bold flex items-center justify-center">
-                  2
-                </span>
-                <span>
-                  Copy the pin URL from your browser. It should be a public
-                  Pinterest link.
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-brand-100 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300 text-xs font-bold flex items-center justify-center">
-                  3
-                </span>
-                <span>
-                  Paste the URL above and click Download. We&apos;ll find the
-                  GIF or animated content on the page.
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-brand-100 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300 text-xs font-bold flex items-center justify-center">
-                  4
-                </span>
-                <span>
-                  Save the file. Note that some &quot;GIFs&quot; may download as
-                  MP4 — this is how Pinterest serves short animated content.
-                </span>
-              </li>
+              {howToSteps.map((step, i) => (
+                <li key={i} className="flex gap-3">
+                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-brand-100 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300 text-xs font-bold flex items-center justify-center">
+                    {i + 1}
+                  </span>
+                  <span>{step.text}</span>
+                </li>
+              ))}
             </ol>
-          </section>
-
-          {/* Note about format */}
-          <section className="mt-12">
-            <div className="p-5 rounded-xl border bg-surface-50 border-surface-200 dark:bg-surface-900 dark:border-surface-800">
-              <h3 className="text-sm font-semibold text-surface-900 dark:text-white mb-2 flex items-center gap-2">
-                <svg className="w-4 h-4 text-brand-600 dark:text-brand-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
-                </svg>
-                About GIF vs MP4 on Pinterest
-              </h3>
-              <p className="text-sm text-surface-600 dark:text-surface-400 leading-relaxed">
-                Pinterest typically stores animated content as MP4 video files
-                rather than traditional GIFs. This results in much smaller file
-                sizes with better visual quality. If your download is an MP4,
-                it&apos;s the correct file — most modern browsers and devices
-                play MP4 animations just like GIFs.
-              </p>
-            </div>
           </section>
 
           {/* FAQ */}

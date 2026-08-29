@@ -9,7 +9,13 @@ import { ErrorState } from "@/components/downloader/ErrorState";
 import { FAQAccordion } from "@/components/faq/FAQAccordion";
 import { useDownloader } from "@/hooks/useDownloader";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
-import { WebApplicationJsonLd, FAQJsonLd } from "@/components/seo/JsonLd";
+import {
+  WebApplicationJsonLd,
+  FAQJsonLd,
+  HowToJsonLd,
+  BreadcrumbJsonLd,
+  OrganizationJsonLd,
+} from "@/components/seo/JsonLd";
 
 const faqs = [
   {
@@ -39,6 +45,13 @@ const faqs = [
   },
 ];
 
+const howToSteps = [
+  { name: "Find the video", text: "Open Pinterest and find the video you want to download. Make sure the pin is public." },
+  { name: "Copy the link", text: "Copy the URL from your browser address bar. It should look like pinterest.com/pin/..." },
+  { name: "Paste and download", text: "Paste the URL into the input field above and click Download." },
+  { name: "Save the file", text: "Choose the video and click Save to download it to your device." },
+];
+
 const relatedTools = [
   {
     href: "/pinterest-image-downloader",
@@ -58,8 +71,20 @@ export default function PinterestVideoDownloaderPage() {
 
   return (
     <>
+      <OrganizationJsonLd />
       <WebApplicationJsonLd />
       <FAQJsonLd faqs={faqs} />
+      <HowToJsonLd
+        name="How to Download Pinterest Videos"
+        description="Step-by-step guide to download videos from Pinterest using SavePin."
+        steps={howToSteps}
+      />
+      <BreadcrumbJsonLd
+        items={[
+          { name: "Home", url: "/" },
+          { name: "Video Downloader", url: "/pinterest-video-downloader" },
+        ]}
+      />
 
       <Container>
         <div className="py-12 max-w-3xl mx-auto">
@@ -103,45 +128,14 @@ export default function PinterestVideoDownloaderPage() {
               How to download Pinterest videos
             </h2>
             <ol className="space-y-4 text-surface-600 dark:text-surface-400 leading-relaxed">
-              <li className="flex gap-3">
-                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-brand-100 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300 text-xs font-bold flex items-center justify-center">
-                  1
-                </span>
-                <span>
-                  Open Pinterest and find the video you want to download. Make
-                  sure the pin is public.
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-brand-100 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300 text-xs font-bold flex items-center justify-center">
-                  2
-                </span>
-                <span>
-                  Copy the URL from your browser&apos;s address bar. It should
-                  look like{" "}
-                  <code className="px-1.5 py-0.5 rounded bg-surface-100 dark:bg-surface-800 text-xs">
-                    pinterest.com/pin/...
-                  </code>
-                  .
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-brand-100 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300 text-xs font-bold flex items-center justify-center">
-                  3
-                </span>
-                <span>
-                  Paste the URL in the input field above and click
-                  &quot;Download&quot;.
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-brand-100 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300 text-xs font-bold flex items-center justify-center">
-                  4
-                </span>
-                <span>
-                  Save the video file to your device.
-                </span>
-              </li>
+              {howToSteps.map((step, i) => (
+                <li key={i} className="flex gap-3">
+                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-brand-100 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300 text-xs font-bold flex items-center justify-center">
+                    {i + 1}
+                  </span>
+                  <span>{step.text}</span>
+                </li>
+              ))}
             </ol>
           </section>
 

@@ -18,14 +18,31 @@ export function WebsiteJsonLd() {
         "@context": "https://schema.org",
         "@type": "WebSite",
         name: "SavePin",
-        url: process.env.NEXT_PUBLIC_SITE_URL || "https://savepin.app",
+        url: process.env.NEXT_PUBLIC_SITE_URL || "https://savepin.vercel.app",
         description:
           "Simple, fast Pinterest media tools. Download videos, images, and GIFs.",
         potentialAction: {
           "@type": "SearchAction",
-          target: `${process.env.NEXT_PUBLIC_SITE_URL || "https://savepin.app"}/blog?q={search_term_string}`,
+          target: `${process.env.NEXT_PUBLIC_SITE_URL || "https://savepin.vercel.app"}/blog?q={search_term_string}`,
           "query-input": "required name=search_term_string",
         },
+      }}
+    />
+  );
+}
+
+export function OrganizationJsonLd() {
+  return (
+    <JsonLd
+      data={{
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        name: "SavePin",
+        url: process.env.NEXT_PUBLIC_SITE_URL || "https://savepin.vercel.app",
+        logo: `${process.env.NEXT_PUBLIC_SITE_URL || "https://savepin.vercel.app"}/logo.svg`,
+        description:
+          "Free Pinterest media downloader — save videos, images, and GIFs from public Pinterest pins.",
+        sameAs: [],
       }}
     />
   );
@@ -38,7 +55,7 @@ export function WebApplicationJsonLd() {
         "@context": "https://schema.org",
         "@type": "WebApplication",
         name: "SavePin",
-        url: process.env.NEXT_PUBLIC_SITE_URL || "https://savepin.app",
+        url: process.env.NEXT_PUBLIC_SITE_URL || "https://savepin.vercel.app",
         applicationCategory: "MultimediaApplication",
         operatingSystem: "Web",
         description:
@@ -53,12 +70,41 @@ export function WebApplicationJsonLd() {
   );
 }
 
+export function HowToJsonLd({
+  name,
+  description,
+  steps,
+}: {
+  name: string;
+  description: string;
+  steps: { name: string; text: string; image?: string }[];
+}) {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://savepin.vercel.app";
+  return (
+    <JsonLd
+      data={{
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        name,
+        description,
+        step: steps.map((step, i) => ({
+          "@type": "HowToStep",
+          position: i + 1,
+          name: step.name,
+          text: step.text,
+          ...(step.image ? { image: `${siteUrl}${step.image}` } : {}),
+        })),
+      }}
+    />
+  );
+}
+
 export function BreadcrumbJsonLd({
   items,
 }: {
   items: { name: string; url: string }[];
 }) {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://savepin.app";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://savepin.vercel.app";
 
   return (
     <JsonLd
@@ -93,7 +139,7 @@ export function ArticleJsonLd({
   dateModified?: string;
   authorName: string;
 }) {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://savepin.app";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://savepin.vercel.app";
 
   return (
     <JsonLd

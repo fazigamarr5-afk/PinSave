@@ -9,7 +9,13 @@ import { ErrorState } from "@/components/downloader/ErrorState";
 import { FAQAccordion } from "@/components/faq/FAQAccordion";
 import { useDownloader } from "@/hooks/useDownloader";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
-import { WebApplicationJsonLd, FAQJsonLd } from "@/components/seo/JsonLd";
+import {
+  WebApplicationJsonLd,
+  FAQJsonLd,
+  HowToJsonLd,
+  BreadcrumbJsonLd,
+  OrganizationJsonLd,
+} from "@/components/seo/JsonLd";
 
 const faqs = [
   {
@@ -34,6 +40,13 @@ const faqs = [
   },
 ];
 
+const howToSteps = [
+  { name: "Find the image", text: "Find the image you want on Pinterest. Right-click the pin and copy its link, or grab the URL from the address bar." },
+  { name: "Copy the link", text: "Copy the URL from your browser. It should be a public Pinterest link." },
+  { name: "Paste and download", text: "Paste the URL into the field above and press Enter or click Download." },
+  { name: "Save the image", text: "Choose the image you want and click Save to download it to your device." },
+];
+
 const relatedTools = [
   {
     href: "/pinterest-video-downloader",
@@ -53,18 +66,27 @@ export default function PinterestImageDownloaderPage() {
 
   return (
     <>
+      <OrganizationJsonLd />
       <WebApplicationJsonLd />
       <FAQJsonLd faqs={faqs} />
+      <HowToJsonLd
+        name="How to Download Pinterest Images"
+        description="Step-by-step guide to download images from Pinterest using SavePin."
+        steps={howToSteps}
+      />
+      <BreadcrumbJsonLd
+        items={[
+          { name: "Home", url: "/" },
+          { name: "Image Downloader", url: "/pinterest-image-downloader" },
+        ]}
+      />
 
       <Container>
         <div className="py-12 max-w-3xl mx-auto">
           <Breadcrumbs
             items={[
               { label: "Tools", href: "/pinterest-image-downloader" },
-              {
-                label: "Image Downloader",
-                href: "/pinterest-image-downloader",
-              },
+              { label: "Image Downloader", href: "/pinterest-image-downloader" },
             ]}
           />
 
@@ -102,64 +124,15 @@ export default function PinterestImageDownloaderPage() {
               How to save Pinterest images
             </h2>
             <ol className="space-y-4 text-surface-600 dark:text-surface-400 leading-relaxed">
-              <li className="flex gap-3">
-                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-brand-100 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300 text-xs font-bold flex items-center justify-center">
-                  1
-                </span>
-                <span>
-                  Find the image you want on Pinterest. Right-click the pin and
-                  copy its link, or grab the URL from the address bar.
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-brand-100 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300 text-xs font-bold flex items-center justify-center">
-                  2
-                </span>
-                <span>
-                  Paste the URL into the field above and press Enter or click
-                  Download.
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-brand-100 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300 text-xs font-bold flex items-center justify-center">
-                  3
-                </span>
-                <span>
-                  Choose the image you want and click Save to download it to
-                  your device.
-                </span>
-              </li>
+              {howToSteps.map((step, i) => (
+                <li key={i} className="flex gap-3">
+                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-brand-100 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300 text-xs font-bold flex items-center justify-center">
+                    {i + 1}
+                  </span>
+                  <span>{step.text}</span>
+                </li>
+              ))}
             </ol>
-          </section>
-
-          {/* Tips */}
-          <section className="mt-12">
-            <h2 className="text-xl font-bold text-surface-900 dark:text-white mb-4">
-              Tips for best results
-            </h2>
-            <ul className="space-y-3 text-surface-600 dark:text-surface-400 leading-relaxed">
-              <li className="flex gap-2">
-                <span className="text-brand-600 dark:text-brand-400">•</span>
-                <span>
-                  Use the direct pin URL (containing <code className="px-1 py-0.5 rounded bg-surface-100 dark:bg-surface-800 text-xs">/pin/</code>) for
-                  the most reliable results.
-                </span>
-              </li>
-              <li className="flex gap-2">
-                <span className="text-brand-600 dark:text-brand-400">•</span>
-                <span>
-                  If a pin has multiple images, all available versions will be
-                  shown for download.
-                </span>
-              </li>
-              <li className="flex gap-2">
-                <span className="text-brand-600 dark:text-brand-400">•</span>
-                <span>
-                  Original-resolution images are preferred when available from
-                  the uploader.
-                </span>
-              </li>
-            </ul>
           </section>
 
           {/* FAQ */}

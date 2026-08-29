@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   description:
     "Download Pinterest videos, images, and GIFs. Free, simple, and fast Pinterest media downloader — no account required.",
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL || "https://savepin.app"
+    process.env.NEXT_PUBLIC_SITE_URL || "https://savepin.vercel.app"
   ),
   openGraph: {
     type: "website",
