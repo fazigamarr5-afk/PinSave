@@ -27,6 +27,9 @@ function insertMarkdown(
     after +
     textarea.value.substring(end);
 
+  // Save scroll position
+  const scrollTop = textarea.scrollTop;
+
   // Set the new value
   const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
     window.HTMLTextAreaElement.prototype,
@@ -35,10 +38,11 @@ function insertMarkdown(
   nativeInputValueSetter?.call(textarea, newText);
   textarea.dispatchEvent(new Event("input", { bubbles: true }));
 
-  // Restore cursor position
+  // Restore scroll and cursor position
   const newStart = start + before.length;
   const newEnd = newStart + text.length;
   requestAnimationFrame(() => {
+    textarea.scrollTop = scrollTop;
     textarea.focus();
     textarea.setSelectionRange(newStart, newEnd);
   });
@@ -58,6 +62,7 @@ function insertLinePrefix(
     const newText =
       textarea.value.substring(0, lineStart) +
       textarea.value.substring(lineStart + prefix.length);
+    const scrollTop = textarea.scrollTop;
     const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
       window.HTMLTextAreaElement.prototype,
       "value"
@@ -65,6 +70,7 @@ function insertLinePrefix(
     nativeInputValueSetter?.call(textarea, newText);
     textarea.dispatchEvent(new Event("input", { bubbles: true }));
     requestAnimationFrame(() => {
+      textarea.scrollTop = scrollTop;
       textarea.focus();
       textarea.setSelectionRange(
         start - prefix.length,
@@ -78,6 +84,7 @@ function insertLinePrefix(
     textarea.value.substring(0, lineStart) +
     prefix +
     textarea.value.substring(lineStart);
+  const scrollTop = textarea.scrollTop;
   const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
     window.HTMLTextAreaElement.prototype,
     "value"
@@ -85,6 +92,7 @@ function insertLinePrefix(
   nativeInputValueSetter?.call(textarea, newText);
   textarea.dispatchEvent(new Event("input", { bubbles: true }));
   requestAnimationFrame(() => {
+    textarea.scrollTop = scrollTop;
     textarea.focus();
     textarea.setSelectionRange(start + prefix.length, start + prefix.length);
   });
@@ -159,6 +167,7 @@ const buttons = [
       const prefix = ta.value[start - 1] === "\n" || start === 0 ? "" : "\n";
       const newText =
         ta.value.substring(0, start) + prefix + "\n---\n" + ta.value.substring(start);
+      const scrollTop = ta.scrollTop;
       const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
         window.HTMLTextAreaElement.prototype,
         "value"
@@ -166,6 +175,7 @@ const buttons = [
       nativeInputValueSetter?.call(ta, newText);
       ta.dispatchEvent(new Event("input", { bubbles: true }));
       requestAnimationFrame(() => {
+        ta.scrollTop = scrollTop;
         ta.focus();
         ta.setSelectionRange(start + prefix.length + 5, start + prefix.length + 5);
       });
