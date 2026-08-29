@@ -13,63 +13,99 @@ interface RichTextEditorProps {
 function htmlToMarkdown(html: string): string {
   let md = html;
 
-  // Decode HTML entities
+  // Step 1: Remove MS Office junk BEFORE any processing
+  // Remove <xml> blocks (Word namespace declarations)
+  md = md.replace(/<xml>[\s\S]*?<\/xml>/gi, "");
+  // Remove <style> blocks
+  md = md.replace(/<style[\s\S]*?<\/style>/gi, "");
+  // Remove Word namespace tags like <w:sdt>, <w:body>, <o:p>, etc.
+  md = md.replace(/<\/?[a-z]+:[^>]+>/gi, "");
+  // Remove VML tags
+  md = md.replace(/<v:[^>]+>[\s\S]*?<\/v:[^>]+>/gi, "");
+  md = md.replace(/<o:[^>]+>[\s\S]*?<\/o:[^>]+>/gi, "");
+  md = md.replace(/<w:[^>]+>[\s\S]*?<\/w:[^>]+>/gi, "");
+  // Remove <!--[if ...]> blocks
+  md = md.replace(/<!--[\s\S]*?-->/gi, "");
+  // Remove MSO-specific class styles and meta tags
+  md = md.replace(/<meta[^>]+>/gi, "");
+  md = md.replace(/<link[^>]+>/gi, "");
+  // Remove empty divs and spans that Word creates
+  md = md.replace(/<div[^>]*>\s*<\/div>/gi, "");
+  md = md.replace(/<span[^>]*>\s*<\/span>/gi, "");
+
+  // Step 2: Decode HTML entities
   md = md.replace(/&nbsp;/g, " ");
   md = md.replace(/&amp;/g, "&");
   md = md.replace(/&lt;/g, "<");
   md = md.replace(/&gt;/g, ">");
   md = md.replace(/&quot;/g, '"');
   md = md.replace(/&#39;/g, "'");
+  md = md.replace(/&#8217;/g, "'");
+  md = md.replace(/&#8220;/g, '"');
+  md = md.replace(/&#8221;/g, '"');
+  md = md.replace(/&#8211;/g, "-");
+  md = md.replace(/&#8212;/g, "--");
 
-  // Block elements — add newlines
+  // Step 3: Convert block elements to newlines
   md = md.replace(/<br\s*\/?>/gi, "\n");
   md = md.replace(/<\/p>/gi, "\n\n");
   md = md.replace(/<\/div>/gi, "\n");
   md = md.replace(/<\/h1>/gi, "\n\n");
   md = md.replace(/<\/h2>/gi, "\n\n");
   md = md.replace(/<\/h3>/gi, "\n\n");
+  md = md.replace(/<\/h4>/gi, "\n\n");
   md = md.replace(/<\/li>/gi, "\n");
   md = md.replace(/<\/tr>/gi, "\n");
   md = md.replace(/<\/td>/gi, " | ");
   md = md.replace(/<hr[^>]*>/gi, "\n---\n");
   md = md.replace(/<li[^>]*>/gi, "- ");
 
-  // Headings
+  // Step 4: Headings
   md = md.replace(/<h1[^>]*>/gi, "# ");
   md = md.replace(/<h2[^>]*>/gi, "## ");
   md = md.replace(/<h3[^>]*>/gi, "### ");
   md = md.replace(/<h4[^>]*>/gi, "#### ");
 
-  // Bold and italic
+  // Step 5: Bold and italic (handle nested)
   md = md.replace(/<(strong|b)[^>]*>([\s\S]*?)<\/(strong|b)>/gi, "**$2**");
   md = md.replace(/<(em|i)[^>]*>([\s\S]*?)<\/(em|i)>/gi, "*$2*");
-  md = md.replace(/<(strong|b)>([\s\S]*?)<\/(strong|b)>/gi, "**$2**");
 
-  // Links
+  // Step 6: Links and images
   md = md.replace(/<a[^>]*href="([^"]*)"[^>]*>([\s\S]*?)<\/a>/gi, "[$2]($1)");
-
-  // Images
   md = md.replace(/<img[^>]*src="([^"]*)"[^>]*alt="([^"]*)"[^>]*\/?>/gi, "![$2]($1)");
   md = md.replace(/<img[^>]*src="([^"]*)"[^>]*\/?>/gi, "![]($1)");
 
-  // Inline code
+  // Step 7: Inline code
   md = md.replace(/<code[^>]*>([\s\S]*?)<\/code>/gi, "`$1`");
 
-  // Blockquotes
-  md = md.replace(/<blockquote[^>]*>([\s\S]*?)<\/blockquote>/gi, (_, content) => {
+  // Step 8: Blockquotes
+  md = md.replace(/<blockquote[^>]*>([\s\S]*?)<\/blockquote>/gi, (_, content: string) => {
     return content
       .split("\n")
       .map((line: string) => "> " + line.trim())
       .join("\n");
   });
 
-  // Remove remaining HTML tags
+  // Step 9: Remove ALL remaining HTML tags
   md = md.replace(/<[^>]+>/g, "");
 
-  // Decode remaining entities
+  // Step 10: Decode any remaining entities
   md = md.replace(/&amp;/g, "&");
   md = md.replace(/&lt;/g, "<");
   md = md.replace(/&gt;/g, ">");
+
+  // Step 11: Clean up
+  // Remove lines that are only whitespace or CSS-like content
+  md = md.split("\n").filter((line: string) => {
+    const trimmed = line.trim();
+    // Skip empty lines, CSS, JS, or Word artifacts
+    if (!trimmed) return true;
+    if (/^[{};:.,\s]+$/.test(trimmed)) return false;
+    if (/^\d+$/.test(trimmed)) return false;
+    if (/^(true|false|EN-US|X-NONE|Normal)$/i.test(trimmed)) return false;
+    if (trimmed.length < 2 && /^[\s\d]+$/.test(trimmed)) return false;
+    return true;
+  }).join("\n");
 
   // Clean up excessive newlines
   md = md.replace(/\n{3,}/g, "\n\n");
