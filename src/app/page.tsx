@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
 import { DownloaderInput } from "@/components/downloader/DownloaderInput";
@@ -7,6 +8,7 @@ import { DownloaderResult } from "@/components/downloader/DownloaderResult";
 import { DownloadProgress } from "@/components/downloader/DownloadProgress";
 import { ErrorState } from "@/components/downloader/ErrorState";
 import { useDownloader } from "@/hooks/useDownloader";
+import { createClient } from "@/lib/supabase/client";
 import { WebsiteJsonLd, WebApplicationJsonLd } from "@/components/seo/JsonLd";
 
 const tools = [
@@ -42,57 +44,60 @@ const tools = [
   },
 ];
 
-const steps = [
-  {
-    step: "1",
-    title: "Copy the URL",
-    description: "Find a public Pinterest pin and copy its URL from your browser.",
-  },
-  {
-    step: "2",
-    title: "Paste it here",
-    description:
-      "Paste the Pinterest URL into the input field above and click Download.",
-  },
-  {
-    step: "3",
-    title: "Save the file",
-    description:
-      "Choose the media you want and save it to your device.",
-  },
+// Default content (used as fallback if DB is empty)
+const defaultSteps = [
+  { step: "1", title: "Copy the URL", description: "Find a public Pinterest pin and copy its URL from your browser." },
+  { step: "2", title: "Paste it here", description: "Paste the Pinterest URL into the input field above and click Download." },
+  { step: "3", title: "Save the file", description: "Choose the media you want and save it to your device." },
 ];
 
-const faqs = [
-  {
-    question: "Is SavePin free to use?",
-    answer:
-      "Yes. SavePin is completely free. There are no hidden fees or account requirements.",
-  },
-  {
-    question: "Do I need to create an account?",
-    answer:
-      "No. You can use SavePin without creating an account or logging in.",
-  },
-  {
-    question: "Can I download from private Pinterest boards?",
-    answer:
-      "No. SavePin only works with publicly accessible Pinterest content. We do not bypass authentication or access restrictions.",
-  },
-  {
-    question: "What file formats are supported?",
-    answer:
-      "SavePin supports video (MP4), images (JPG/PNG/WebP), and GIF formats from Pinterest.",
-  },
-  {
-    question: "Is it legal to download Pinterest content?",
-    answer:
-      "Downloading content for personal use from publicly available pins is generally acceptable. However, you should respect copyright and the original creator's rights. Do not redistribute or use downloaded content commercially without permission.",
-  },
+const defaultFeatures = [
+  { title: "No signup", description: "Use the tools immediately without creating an account." },
+  { title: "Works on mobile", description: "Fully responsive — works on any device with a browser." },
+  { title: "Clean interface", description: "No clutter, no ads in the way. Just paste and download." },
+  { title: "Privacy first", description: "We don't store your URLs or downloaded files." },
 ];
+
+const defaultFaqs = [
+  { question: "Is SavePin free to use?", answer: "Yes. SavePin is completely free. There are no hidden fees or account requirements." },
+  { question: "Do I need to create an account?", answer: "No. You can use SavePin without creating an account or logging in." },
+  { question: "Can I download from private Pinterest boards?", answer: "No. SavePin only works with publicly accessible Pinterest content. We do not bypass authentication or access restrictions." },
+  { question: "What file formats are supported?", answer: "SavePin supports video (MP4), images (JPG/PNG/WebP), and GIF formats from Pinterest." },
+  { question: "Is it legal to download Pinterest content?", answer: "Downloading content for personal use from publicly available pins is generally acceptable. However, you should respect copyright and the original creator's rights. Do not redistribute or use downloaded content commercially without permission." },
+];
+
+interface PageContent {
+  hero: { title: string; subtitle: string; trustBadges: string[] };
+  howItWorks: { title: string; steps: { step: string; title: string; description: string }[] };
+  features: { title: string; items: { title: string; description: string }[] };
+  faq: { title: string; items: { question: string; answer: string }[] };
+}
 
 export default function HomePage() {
-  const { url, setUrl, state, results, error, submit, reset } =
-    useDownloader();
+  const { url, setUrl, state, results, error, submit, reset } = useDownloader();
+  const [pageContent, setPageContent] = useState<PageContent | null>(null);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase
+      .from("pages")
+      .select("content")
+      .eq("slug", "homepage")
+      .eq("status", "published")
+      .single()
+      .then(({ data }: { data: any }) => {
+        if (data?.content) setPageContent(data.content as PageContent);
+      })
+      .catch(() => {});
+  }, []);
+
+  const hero = pageContent?.hero || { title: "Pinterest Video Downloader", subtitle: "Download videos, images, and GIFs from public Pinterest pins. Free, simple, and fast — no account required.", trustBadges: ["Free", "No account needed", "Simple to use"] };
+  const howItWorksTitle = pageContent?.howItWorks?.title || "How It Works";
+  const steps = pageContent?.howItWorks?.steps?.length ? pageContent.howItWorks.steps : defaultSteps;
+  const featuresTitle = pageContent?.features?.title || "Why SavePin";
+  const features = pageContent?.features?.items?.length ? pageContent.features.items : defaultFeatures;
+  const faqTitle = pageContent?.faq?.title || "Frequently Asked Questions";
+  const faqs = pageContent?.faq?.items?.length ? pageContent.faq.items : defaultFaqs;
 
   return (
     <>
@@ -104,11 +109,10 @@ export default function HomePage() {
         <Container>
           <div className="text-center max-w-3xl mx-auto">
             <h1 className="text-4xl sm:text-5xl font-bold text-surface-900 dark:text-white tracking-tight">
-              Pinterest Video Downloader
+              {hero.title}
             </h1>
             <p className="mt-4 text-lg text-surface-600 dark:text-surface-400 leading-relaxed">
-              Download videos, images, and GIFs from public Pinterest pins.
-              Free, simple, and fast — no account required.
+              {hero.subtitle}
             </p>
           </div>
 
@@ -123,24 +127,14 @@ export default function HomePage() {
 
           {/* Trust points */}
           <div className="mt-6 flex items-center justify-center gap-6 text-sm text-surface-500 dark:text-surface-400">
-            <span className="flex items-center gap-1.5">
-              <svg className="w-4 h-4 text-green-500" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              Free
-            </span>
-            <span className="flex items-center gap-1.5">
-              <svg className="w-4 h-4 text-green-500" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              No account needed
-            </span>
-            <span className="flex items-center gap-1.5">
-              <svg className="w-4 h-4 text-green-500" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              Simple to use
-            </span>
+            {hero.trustBadges.map((badge: string) => (
+              <span key={badge} className="flex items-center gap-1.5">
+                <svg className="w-4 h-4 text-green-500" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                {badge}
+              </span>
+            ))}
           </div>
 
           {/* Results/Progress/Error */}
@@ -159,10 +153,10 @@ export default function HomePage() {
       <section className="py-16 bg-surface-50 dark:bg-surface-950 border-t border-surface-200 dark:border-surface-800">
         <Container>
           <h2 className="text-2xl font-bold text-surface-900 dark:text-white text-center mb-10">
-            How It Works
+            {howItWorksTitle}
           </h2>
           <div className="grid gap-8 md:grid-cols-3">
-            {steps.map((step) => (
+            {steps.map((step: { step: string; title: string; description: string }) => (
               <div key={step.step} className="text-center">
                 <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-brand-100 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300 text-sm font-bold mb-4">
                   {step.step}
@@ -211,33 +205,16 @@ export default function HomePage() {
       <section className="py-16 bg-surface-50 dark:bg-surface-950 border-t border-surface-200 dark:border-surface-800">
         <Container>
           <h2 className="text-2xl font-bold text-surface-900 dark:text-white text-center mb-10">
-            Why SavePin
+            {featuresTitle}
           </h2>
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4 max-w-4xl mx-auto">
-            {[
-              {
-                title: "No signup",
-                desc: "Use the tools immediately without creating an account.",
-              },
-              {
-                title: "Works on mobile",
-                desc: "Fully responsive — works on any device with a browser.",
-              },
-              {
-                title: "Clean interface",
-                desc: "No clutter, no ads in the way. Just paste and download.",
-              },
-              {
-                title: "Privacy first",
-                desc: "We don't store your URLs or downloaded files.",
-              },
-            ].map((item) => (
+            {features.map((item: { title: string; description: string }) => (
               <div key={item.title}>
                 <h3 className="text-sm font-semibold text-surface-900 dark:text-white mb-1">
                   {item.title}
                 </h3>
                 <p className="text-sm text-surface-500 dark:text-surface-400 leading-relaxed">
-                  {item.desc}
+                  {item.description}
                 </p>
               </div>
             ))}
@@ -249,10 +226,10 @@ export default function HomePage() {
       <section className="py-16">
         <Container narrow>
           <h2 className="text-2xl font-bold text-surface-900 dark:text-white text-center mb-10">
-            Frequently Asked Questions
+            {faqTitle}
           </h2>
           <div className="space-y-3">
-            {faqs.map((faq, i) => (
+            {faqs.map((faq: { question: string; answer: string }, i: number) => (
               <details
                 key={i}
                 className="group border border-surface-200 dark:border-surface-800 rounded-lg overflow-hidden"

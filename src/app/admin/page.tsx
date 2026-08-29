@@ -28,6 +28,8 @@ const stats = [
 ];
 
 const quickActions = [
+  { label: "Edit homepage", href: "/admin/pages/homepage/edit" },
+  { label: "Manage navigation", href: "/admin/navigation" },
   { label: "New blog post", href: "/admin/posts/new" },
   { label: "Edit tool pages", href: "/admin/tools" },
   { label: "Manage FAQs", href: "/admin/faqs" },

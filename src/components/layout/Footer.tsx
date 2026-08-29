@@ -1,7 +1,11 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
+import { createClient } from "@/lib/supabase/client";
 
-const footerLinks = {
+const defaultFooterLinks = {
   tools: [
     { href: "/pinterest-video-downloader", label: "Video Downloader" },
     { href: "/pinterest-image-downloader", label: "Image Downloader" },
@@ -19,6 +23,34 @@ const footerLinks = {
 };
 
 export function Footer() {
+  const [footerLinks, setFooterLinks] = useState(defaultFooterLinks);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase
+      .from("navigation")
+      .select("menu_name, label, url, sort_order")
+      .eq("is_active", true)
+      .in("menu_name", ["footer_tools", "footer_company", "footer_legal"])
+      .order("sort_order")
+      .then(({ data }: { data: any }) => {
+        if (data && data.length > 0) {
+          const grouped: typeof defaultFooterLinks = { tools: [], company: [], legal: [] };
+          data.forEach((item: any) => {
+            const key = item.menu_name.replace("footer_", "") as keyof typeof grouped;
+            if (key in grouped) {
+              grouped[key].push({ href: item.url, label: item.label });
+            }
+          });
+          // Only update if we got data for each group
+          if (grouped.tools.length > 0 || grouped.company.length > 0 || grouped.legal.length > 0) {
+            setFooterLinks(grouped);
+          }
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   return (
     <footer className="border-t bg-white dark:bg-surface-950 dark:border-surface-800">
       <Container>

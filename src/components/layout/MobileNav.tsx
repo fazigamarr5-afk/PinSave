@@ -1,14 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
 
 interface MobileNavProps {
   open: boolean;
   onClose: () => void;
 }
 
-const navLinks = [
+const defaultNavLinks = [
   { href: "/pinterest-video-downloader", label: "Video Downloader" },
   { href: "/pinterest-image-downloader", label: "Image Downloader" },
   { href: "/pinterest-gif-downloader", label: "GIF Downloader" },
@@ -18,6 +19,8 @@ const navLinks = [
 ];
 
 export function MobileNav({ open, onClose }: MobileNavProps) {
+  const [navLinks, setNavLinks] = useState(defaultNavLinks);
+
   // Lock body scroll when open
   useEffect(() => {
     if (open) {
@@ -29,6 +32,22 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
       document.body.style.overflow = "";
     };
   }, [open]);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase
+      .from("navigation")
+      .select("label, url, sort_order")
+      .eq("menu_name", "header")
+      .eq("is_active", true)
+      .order("sort_order")
+      .then(({ data }: { data: any }) => {
+        if (data && data.length > 0) {
+          setNavLinks(data.map((item: any) => ({ href: item.url, label: item.label })));
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   if (!open) return null;
 

@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Container } from "@/components/ui/Container";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { MobileNav } from "./MobileNav";
+import { createClient } from "@/lib/supabase/client";
 
-const navLinks = [
+const defaultNavLinks = [
   { href: "/pinterest-video-downloader", label: "Video" },
   { href: "/pinterest-image-downloader", label: "Image" },
   { href: "/pinterest-gif-downloader", label: "GIF" },
@@ -16,6 +17,23 @@ const navLinks = [
 
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [navLinks, setNavLinks] = useState(defaultNavLinks);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase
+      .from("navigation")
+      .select("label, url, sort_order")
+      .eq("menu_name", "header")
+      .eq("is_active", true)
+      .order("sort_order")
+      .then(({ data }: { data: any }) => {
+        if (data && data.length > 0) {
+          setNavLinks(data.map((item: any) => ({ href: item.url, label: item.label })));
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white/80 backdrop-blur-md dark:bg-surface-950/80 dark:border-surface-800">
