@@ -300,24 +300,27 @@ export function RichTextEditor({
     []
   );
 
-  // Handle paste from MS Office / Google Docs — convert HTML to Markdown
+  // Handle paste from MS Office / Google Docs
   const handlePaste = useCallback(
     (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
       const html = e.clipboardData.getData("text/html");
       const plainText = e.clipboardData.getData("text/plain");
 
-      // If pasting HTML (from Word, Google Docs, etc.), convert to Markdown
-      if (html && html.trim() !== plainText.trim()) {
+      // Word/Office HTML is too messy to reliably convert.
+      // Use the plain text version from clipboard instead —
+      // it preserves paragraph breaks and is clean.
+      // The toolbar buttons (B, I, H2, etc.) handle formatting.
+      if (html && plainText && plainText.trim().length > 0) {
         e.preventDefault();
-        const markdown = htmlToMarkdown(html);
         const textarea = textareaRef.current;
         if (!textarea) return;
 
         const start = textarea.selectionStart;
         const end = textarea.selectionEnd;
+        const cleanText = plainText.replace(/\r\n/g, "\n");
         const newText =
           textarea.value.substring(0, start) +
-          markdown +
+          cleanText +
           textarea.value.substring(end);
 
         const scrollTop = textarea.scrollTop;
@@ -328,7 +331,7 @@ export function RichTextEditor({
         nativeInputValueSetter?.call(textarea, newText);
         textarea.dispatchEvent(new Event("input", { bubbles: true }));
 
-        const newCursor = start + markdown.length;
+        const newCursor = start + cleanText.length;
         requestAnimationFrame(() => {
           textarea.scrollTop = scrollTop;
           textarea.focus();
