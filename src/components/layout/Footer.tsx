@@ -59,9 +59,10 @@ export function Footer() {
           <div className="col-span-2 md:col-span-1">
             <Link
               href="/"
-              className="font-bold text-xl text-surface-900 dark:text-white"
+              className="flex items-center gap-2 font-bold text-xl text-surface-900 dark:text-white"
             >
-              <span className="text-brand-600">Save</span>Pin
+              <img src="/logo.svg" alt="SavePin" className="w-8 h-8" />
+              <span><span className="text-brand-600">Save</span>Pin</span>
             </Link>
             <p className="mt-3 text-sm text-surface-500 dark:text-surface-400 leading-relaxed">
               Simple, fast Pinterest media tools. Download videos, images, and

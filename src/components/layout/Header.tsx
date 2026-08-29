@@ -44,7 +44,8 @@ export function Header() {
             href="/"
             className="flex items-center gap-2 font-bold text-xl text-surface-900 dark:text-white"
           >
-            <span className="text-brand-600">Save</span>Pin
+            <img src="/logo.svg" alt="SavePin" className="w-8 h-8" />
+            <span><span className="text-brand-600">Save</span>Pin</span>
           </Link>
 
           {/* Desktop nav */}
