@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://savepin.app";
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://savepin.vercel.app";
 
 const staticPages = [
   { path: "/", priority: 1.0, changeFrequency: "weekly" as const },

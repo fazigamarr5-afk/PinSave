@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin
 Disallow: /api/
 
-Sitemap: https://savepin.app/sitemap.xml
+Sitemap: https://savepin.vercel.app/sitemap.xml
