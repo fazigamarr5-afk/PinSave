@@ -41,6 +41,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <meta name="msvalidate.01" content="6CD1E87042E9108DADB9E9310EB31FF3" />
+      </head>
       <body className={`${inter.variable} font-sans antialiased`}>
         <Header />
         <main className="min-h-screen">{children}</main>
