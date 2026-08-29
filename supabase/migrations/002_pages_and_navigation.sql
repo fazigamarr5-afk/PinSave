@@ -83,7 +83,7 @@ insert into public.pages (slug, title, content, status) values
       {"title": "No signup", "description": "Use the tools immediately without creating an account."},
       {"title": "Works on mobile", "description": "Fully responsive — works on any device with a browser."},
       {"title": "Clean interface", "description": "No clutter, no ads in the way. Just paste and download."},
-      {"title": "Privacy first", "description": "We don't store your URLs or downloaded files."}
+      {"title": "Privacy first", "description": "We do not store your URLs or downloaded files."}
     ]
   },
   "faq": {
@@ -93,7 +93,7 @@ insert into public.pages (slug, title, content, status) values
       {"question": "Do I need to create an account?", "answer": "No. You can use SavePin without creating an account or logging in."},
       {"question": "Can I download from private Pinterest boards?", "answer": "No. SavePin only works with publicly accessible Pinterest content. We do not bypass authentication or access restrictions."},
       {"question": "What file formats are supported?", "answer": "SavePin supports video (MP4), images (JPG/PNG/WebP), and GIF formats from Pinterest."},
-      {"question": "Is it legal to download Pinterest content?", "answer": "Downloading content for personal use from publicly available pins is generally acceptable. However, you should respect copyright and the original creator rights. Do not redistribute or use downloaded content commercially without permission."}
+      {"question": "Is it legal to download Pinterest content?", "answer": "Downloading content for personal use from publicly available pins is generally acceptable. However, you should respect copyright and the original creators rights. Do not redistribute or use downloaded content commercially without permission."}
     ]
   }
 }'::jsonb, 'published')
