@@ -42,15 +42,23 @@ export default function EditPage({ params }: { params: Promise<{ slug: string }>
   useEffect(() => {
     const supabase = createClient();
     supabase.from("pages").select("*").eq("slug", slug).single()
-      .then(({ data }: { data: any }) => {
-        if (data) {
+      .then(({ data, error: queryError }: { data: any; error: any }) => {
+        if (queryError) {
+          setError(queryError.message);
+        } else if (data) {
           setTitle(data.title);
           setContent({ ...emptyContent, ...data.content });
           setSeoTitle(data.seo_title || "");
           setSeoDescription(data.seo_description || "");
           setSeoKeywords(data.seo_keywords || "");
           setStatus(data.status);
+        } else {
+          setError(`Page "${slug}" not found in the database. Run the SQL migration first.`);
         }
+        setLoading(false);
+      })
+      .catch((err: Error) => {
+        setError(err.message);
         setLoading(false);
       });
   }, [slug]);
@@ -106,7 +114,12 @@ export default function EditPage({ params }: { params: Promise<{ slug: string }>
     setSaving(false);
   };
 
-  if (loading) return <p className="text-surface-500">Loading...</p>;
+  if (loading) return (
+    <div className="max-w-4xl">
+      <h1 className="text-2xl font-bold text-surface-900 dark:text-white mb-8">Loading page...</h1>
+      <p className="text-surface-500">Fetching data from database...</p>
+    </div>
+  );
 
   const tabs = [
     { id: "hero" as const, label: "Hero" },
