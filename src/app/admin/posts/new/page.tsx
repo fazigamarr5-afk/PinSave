@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { createClient } from "@/lib/supabase/client";
+import { RichTextEditor } from "@/components/admin/RichTextEditor";
 
 export default function NewPostPage() {
   const router = useRouter();
@@ -107,16 +108,10 @@ export default function NewPostPage() {
           <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5">
             Content
           </label>
-          <textarea
+          <RichTextEditor
             value={form.content}
-            onChange={(e) => update("content", e.target.value)}
-            placeholder="Write your article content here..."
-            rows={16}
-            className="w-full px-4 py-3 text-base rounded-lg border bg-white text-surface-900 placeholder:text-surface-400 border-surface-300 hover:border-surface-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-none transition-colors dark:bg-surface-900 dark:text-surface-100 dark:placeholder:text-surface-500 dark:border-surface-700 dark:hover:border-surface-600 resize-y"
+            onChange={(v) => update("content", v)}
           />
-          <p className="mt-1 text-xs text-surface-400 dark:text-surface-500">
-            Plain text or basic HTML supported. Rich editor coming soon.
-          </p>
         </div>
 
         <div className="grid gap-6 sm:grid-cols-2">
