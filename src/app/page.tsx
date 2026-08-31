@@ -10,6 +10,7 @@ import { ErrorState } from "@/components/downloader/ErrorState";
 import { useDownloader } from "@/hooks/useDownloader";
 import { createClient } from "@/lib/supabase/client";
 import { WebsiteJsonLd, WebApplicationJsonLd } from "@/components/seo/JsonLd";
+import { FAQJsonLd } from "@/components/seo/JsonLd";
 
 const tools = [
   {
@@ -103,6 +104,7 @@ export default function HomePage() {
     <>
       <WebsiteJsonLd />
       <WebApplicationJsonLd />
+      <FAQJsonLd faqs={faqs} />
 
       {/* Hero */}
       <section className="py-16 sm:py-24">

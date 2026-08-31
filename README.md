@@ -38,7 +38,7 @@ Visit [http://localhost:3000](http://localhost:3000).
 | `NEXT_PUBLIC_SUPABASE_URL` | Yes | Supabase project URL |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes | Supabase anonymous/public key |
 | `SUPABASE_SERVICE_ROLE_KEY` | Yes | Supabase service role key (server-side only) |
-| `NEXT_PUBLIC_SITE_URL` | Yes | Production site URL (e.g., `https://savepin.app`) |
+| `NEXT_PUBLIC_SITE_URL` | Yes | Production site URL (e.g., `https://npftas.xyz`) |
 | `NEXT_PUBLIC_SITE_NAME` | No | Site name (defaults to `SavePin`) |
 
 **Never commit `.env.local` or expose `SUPABASE_SERVICE_ROLE_KEY` to the browser.**

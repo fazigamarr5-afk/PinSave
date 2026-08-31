@@ -21,10 +21,10 @@ export default function ContactPage() {
           Have a question, suggestion, or issue? We&apos;d like to hear from you.
           Email us at{" "}
           <a
-            href="mailto:hello@savepin.app"
+            href="mailto:hello@npftas.xyz"
             className="text-brand-600 hover:text-brand-700 dark:text-brand-400 dark:hover:text-brand-300 underline underline-offset-2"
           >
-            hello@savepin.app
+            hello@npftas.xyz
           </a>
           .
         </p>
@@ -38,19 +38,19 @@ export default function ContactPage() {
               <strong className="text-surface-900 dark:text-surface-200">
                 General questions:
               </strong>{" "}
-              hello@savepin.app
+              hello@npftas.xyz
             </li>
             <li>
               <strong className="text-surface-900 dark:text-surface-200">
                 DMCA / copyright:
               </strong>{" "}
-              hello@savepin.app
+              hello@npftas.xyz
             </li>
             <li>
               <strong className="text-surface-900 dark:text-surface-200">
                 Bug reports:
               </strong>{" "}
-              hello@savepin.app
+              hello@npftas.xyz
             </li>
           </ul>
         </div>

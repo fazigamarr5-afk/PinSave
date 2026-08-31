@@ -6,7 +6,7 @@ This document describes **every feature, page, database table, and field** in th
 
 ## 1. ADMIN ACCESS
 
-**URL:** `https://savepin.vercel.app/admin/login`
+**URL:** `https://npftas.xyz/admin/login`
 
 **Authentication:** Supabase Auth (email + password)
 - Login page: `/admin/login`
@@ -421,7 +421,7 @@ The `pages.content` column for slug `homepage` stores this JSON structure:
 | `NEXT_PUBLIC_SUPABASE_URL` | Client + Server | Supabase project URL |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Client + Server | Supabase anonymous/public key |
 | `SUPABASE_SERVICE_ROLE_KEY` | Server only | Supabase service role key (secret) |
-| `NEXT_PUBLIC_SITE_URL` | Sitemap | Site URL for SEO (default: https://savepin.vercel.app) |
+| `NEXT_PUBLIC_SITE_URL` | Sitemap | Site URL for SEO (default: https://npftas.xyz) |
 
 ---
 

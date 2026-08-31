@@ -1,0 +1,35 @@
+# SavePin
+
+SavePin is a free web tool for downloading publicly available media (videos, images, GIFs) from Pinterest pins. No account required, no watermarks, no tracking.
+
+## What It Does
+- Downloads Pinterest videos as MP4 files in up to 1080p quality
+- Downloads Pinterest images in original resolution (JPG, PNG, WebP)
+- Downloads animated GIFs and short video clips from Pinterest
+- Works on all devices: iPhone, Android, PC, Mac
+
+## How It Works
+1. Copy a public Pinterest pin URL
+2. Paste it into SavePin
+3. Download the media file
+
+## Key Facts
+- 100% free, no hidden fees
+- No account or login required
+- No files stored on servers
+- Only works with publicly accessible Pinterest content
+- Does not bypass authentication or access restrictions
+
+## Pages
+- [Homepage](https://npftas.xyz/) — Main downloader tool
+- [Pinterest Video Downloader](https://npftas.xyz/pinterest-video-downloader) — Download videos and Reels
+- [Pinterest Image Downloader](https://npftas.xyz/pinterest-image-downloader) — Download photos and images
+- [Pinterest GIF Downloader](https://npftas.xyz/pinterest-gif-downloader) — Download animated GIFs
+- [Blog](https://npftas.xyz/blog) — Guides and tips for downloading Pinterest content
+- [About](https://npftas.xyz/about) — About SavePin
+- [Privacy Policy](https://npftas.xyz/privacy-policy) — How we handle data
+- [Terms](https://npftas.xyz/terms) — Terms of use
+- [Contact](https://npftas.xyz/contact) — Get in touch
+
+## Contact
+Email: hello@npftas.xyz

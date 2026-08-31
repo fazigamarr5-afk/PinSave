@@ -39,7 +39,7 @@ export function truncate(text: string, maxLength: number): string {
 
 // Get site URL
 export function getSiteUrl(): string {
-  return process.env.NEXT_PUBLIC_SITE_URL || "https://savepin.app";
+  return process.env.NEXT_PUBLIC_SITE_URL || "https://npftas.xyz";
 }
 
 // Get site name

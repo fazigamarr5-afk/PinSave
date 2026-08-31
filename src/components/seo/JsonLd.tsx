@@ -18,12 +18,12 @@ export function WebsiteJsonLd() {
         "@context": "https://schema.org",
         "@type": "WebSite",
         name: "SavePin",
-        url: process.env.NEXT_PUBLIC_SITE_URL || "https://savepin.vercel.app",
+        url: process.env.NEXT_PUBLIC_SITE_URL || "https://npftas.xyz",
         description:
           "Simple, fast Pinterest media tools. Download videos, images, and GIFs.",
         potentialAction: {
           "@type": "SearchAction",
-          target: `${process.env.NEXT_PUBLIC_SITE_URL || "https://savepin.vercel.app"}/blog?q={search_term_string}`,
+          target: `${process.env.NEXT_PUBLIC_SITE_URL || "https://npftas.xyz"}/blog?q={search_term_string}`,
           "query-input": "required name=search_term_string",
         },
       }}
@@ -38,8 +38,8 @@ export function OrganizationJsonLd() {
         "@context": "https://schema.org",
         "@type": "Organization",
         name: "SavePin",
-        url: process.env.NEXT_PUBLIC_SITE_URL || "https://savepin.vercel.app",
-        logo: `${process.env.NEXT_PUBLIC_SITE_URL || "https://savepin.vercel.app"}/logo.svg`,
+        url: process.env.NEXT_PUBLIC_SITE_URL || "https://npftas.xyz",
+        logo: `${process.env.NEXT_PUBLIC_SITE_URL || "https://npftas.xyz"}/logo.svg`,
         description:
           "Free Pinterest media downloader — save videos, images, and GIFs from public Pinterest pins.",
         sameAs: [],
@@ -55,7 +55,7 @@ export function WebApplicationJsonLd() {
         "@context": "https://schema.org",
         "@type": "WebApplication",
         name: "SavePin",
-        url: process.env.NEXT_PUBLIC_SITE_URL || "https://savepin.vercel.app",
+        url: process.env.NEXT_PUBLIC_SITE_URL || "https://npftas.xyz",
         applicationCategory: "MultimediaApplication",
         operatingSystem: "Web",
         description:
@@ -79,7 +79,7 @@ export function HowToJsonLd({
   description: string;
   steps: { name: string; text: string; image?: string }[];
 }) {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://savepin.vercel.app";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://npftas.xyz";
   return (
     <JsonLd
       data={{
@@ -104,7 +104,7 @@ export function BreadcrumbJsonLd({
 }: {
   items: { name: string; url: string }[];
 }) {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://savepin.vercel.app";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://npftas.xyz";
 
   return (
     <JsonLd
@@ -139,7 +139,7 @@ export function ArticleJsonLd({
   dateModified?: string;
   authorName: string;
 }) {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://savepin.vercel.app";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://npftas.xyz";
 
   return (
     <JsonLd

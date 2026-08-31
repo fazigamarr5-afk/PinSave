@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useCallback } from "react";
+import { useRef, useCallback, useState } from "react";
 
 interface RichTextEditorProps {
   value: string;
@@ -237,6 +237,12 @@ const buttons = [
       insertMarkdown(ta, "[", "](https://)", "link text"),
   },
   {
+    label: "🖼️",
+    title: "Upload Image",
+    className: "",
+    action: () => {}, // handled separately
+  },
+  {
     label: "•",
     title: "Bullet List",
     className: "text-lg leading-none",
@@ -290,11 +296,65 @@ export function RichTextEditor({
   placeholder = "Write your article content here...",
 }: RichTextEditorProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
 
   const handleClick = useCallback(
     (action: (ta: HTMLTextAreaElement) => void) => {
       if (textareaRef.current) {
         action(textareaRef.current);
+      }
+    },
+    []
+  );
+
+  const handleImageUpload = useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file || !textareaRef.current) return;
+
+      setUploading(true);
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const res = await fetch("/api/upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Upload failed");
+
+        const alt = file.name.replace(/\.[^.]+$/, "").replace(/[-_]/g, " ");
+        const markdown = `![${alt}](${data.url})`;
+
+        const ta = textareaRef.current;
+        const start = ta.selectionStart;
+        const newText =
+          ta.value.substring(0, start) +
+          (start > 0 && ta.value[start - 1] !== "\n" ? "\n" : "") +
+          markdown +
+          "\n" +
+          ta.value.substring(start);
+
+        const nativeSetter = Object.getOwnPropertyDescriptor(
+          window.HTMLTextAreaElement.prototype,
+          "value"
+        )?.set;
+        nativeSetter?.call(ta, newText);
+        ta.dispatchEvent(new Event("input", { bubbles: true }));
+
+        const newCursor = start + markdown.length + 2;
+        requestAnimationFrame(() => {
+          ta.focus();
+          ta.setSelectionRange(newCursor, newCursor);
+        });
+      } catch (err: any) {
+        alert(err.message || "Failed to upload image");
+      } finally {
+        setUploading(false);
+        if (fileInputRef.current) fileInputRef.current.value = "";
       }
     },
     []
@@ -356,6 +416,21 @@ export function RichTextEditor({
               />
             );
           }
+          if (btn.title === "Upload Image") {
+            return (
+              <button
+                key={btn.title}
+                type="button"
+                title={uploading ? "Uploading..." : "Upload Image"}
+                disabled={uploading}
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => fileInputRef.current?.click()}
+                className={`px-2 py-1 text-sm text-surface-600 dark:text-surface-400 hover:bg-surface-200 dark:hover:bg-surface-700 hover:text-surface-900 dark:hover:text-white rounded transition-colors ${uploading ? "opacity-50 cursor-wait" : ""}`}
+              >
+                {uploading ? "⏳" : btn.label}
+              </button>
+            );
+          }
           return (
             <button
               key={btn.title}
@@ -370,6 +445,15 @@ export function RichTextEditor({
           );
         })}
       </div>
+
+      {/* Hidden file input for image upload */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/jpeg,image/png,image/webp,image/gif"
+        className="hidden"
+        onChange={handleImageUpload}
+      />
 
       {/* Textarea — tall with proper scrolling */}
       <textarea
@@ -386,7 +470,7 @@ export function RichTextEditor({
       {/* Help text */}
       <div className="px-3 py-1.5 bg-surface-50 dark:bg-surface-800 border-t border-surface-200 dark:border-surface-700">
         <p className="text-xs text-surface-400 dark:text-surface-500">
-          Supports <strong>Markdown</strong>: **bold**, *italic*, ## headings, - lists, &gt; quotes, [links](url) — paste from Word preserves formatting
+          Supports <strong>Markdown</strong>: **bold**, *italic*, ## headings, - lists, &gt; quotes, [links](url), ![images](url) — click 🖼️ to upload
         </p>
       </div>
     </div>

@@ -3,4 +3,27 @@ Allow: /
 Disallow: /admin
 Disallow: /api/
 
-Sitemap: https://savepin.vercel.app/sitemap.xml
+# AI Search bots — allowed for citation in AI answers
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+# Training-only crawlers — blocked
+User-agent: CCBot
+Disallow: /
+
+Sitemap: https://npftas.xyz/sitemap.xml

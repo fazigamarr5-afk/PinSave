@@ -107,10 +107,10 @@ export default function TermsPage() {
             <p>
               For questions about these terms, email{" "}
               <a
-                href="mailto:hello@savepin.app"
+                href="mailto:hello@npftas.xyz"
                 className="text-brand-600 hover:text-brand-700 dark:text-brand-400 underline underline-offset-2"
               >
-                hello@savepin.app
+                hello@npftas.xyz
               </a>
               .
             </p>

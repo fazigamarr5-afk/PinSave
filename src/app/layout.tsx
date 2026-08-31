@@ -17,15 +17,24 @@ export const metadata: Metadata = {
   },
   description: "Free Pinterest downloader — save videos, images, and GIFs in HD. No watermark, no login. Works on iPhone, Android, and PC. Download now.",
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL || "https://savepin.vercel.app"
+    process.env.NEXT_PUBLIC_SITE_URL || "https://npftas.xyz"
   ),
   openGraph: {
     type: "website",
     locale: "en_US",
     siteName: "SavePin",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "SavePin — Pinterest Video, Image & GIF Downloader",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
+    images: ["/og-image.png"],
   },
   robots: {
     index: true,
@@ -42,6 +51,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <meta name="msvalidate.01" content="6CD1E87042E9108DADB9E9310EB31FF3" />
+        <meta name="google-site-verification" content="EbCriVqK5qRlkviTmEPfu1eVhFKTpD1Qhml6hrGfOoM" />
       </head>
       <body className={`${inter.variable} font-sans antialiased`}>
         <Header />
