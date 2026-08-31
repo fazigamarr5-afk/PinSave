@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { createClient } from "@supabase/supabase-js";
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://npftas.xyz";
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.npftas.xyz";
 
 const staticPages = [
   { path: "/", priority: 1.0, changeFrequency: "weekly" as const },

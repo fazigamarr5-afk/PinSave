@@ -18,12 +18,12 @@ export function WebsiteJsonLd() {
         "@context": "https://schema.org",
         "@type": "WebSite",
         name: "SavePin",
-        url: process.env.NEXT_PUBLIC_SITE_URL || "https://npftas.xyz",
+        url: process.env.NEXT_PUBLIC_SITE_URL || "https://www.npftas.xyz",
         description:
           "Simple, fast Pinterest media tools. Download videos, images, and GIFs.",
         potentialAction: {
           "@type": "SearchAction",
-          target: `${process.env.NEXT_PUBLIC_SITE_URL || "https://npftas.xyz"}/blog?q={search_term_string}`,
+          target: `${process.env.NEXT_PUBLIC_SITE_URL || "https://www.npftas.xyz"}/blog?q={search_term_string}`,
           "query-input": "required name=search_term_string",
         },
       }}
@@ -32,7 +32,7 @@ export function WebsiteJsonLd() {
 }
 
 export function OrganizationJsonLd() {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://npftas.xyz";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.npftas.xyz";
   return (
     <JsonLd
       data={{
@@ -61,7 +61,7 @@ export function WebApplicationJsonLd() {
         "@context": "https://schema.org",
         "@type": "WebApplication",
         name: "SavePin",
-        url: process.env.NEXT_PUBLIC_SITE_URL || "https://npftas.xyz",
+        url: process.env.NEXT_PUBLIC_SITE_URL || "https://www.npftas.xyz",
         applicationCategory: "MultimediaApplication",
         operatingSystem: "Web",
         description:
@@ -85,7 +85,7 @@ export function HowToJsonLd({
   description: string;
   steps: { name: string; text: string; image?: string }[];
 }) {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://npftas.xyz";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.npftas.xyz";
   return (
     <JsonLd
       data={{
@@ -110,7 +110,7 @@ export function BreadcrumbJsonLd({
 }: {
   items: { name: string; url: string }[];
 }) {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://npftas.xyz";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.npftas.xyz";
 
   return (
     <JsonLd
@@ -145,7 +145,7 @@ export function ArticleJsonLd({
   dateModified?: string;
   authorName: string;
 }) {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://npftas.xyz";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.npftas.xyz";
 
   return (
     <JsonLd
@@ -204,7 +204,7 @@ export function SoftwareApplicationJsonLd({
   description: string;
   url: string;
 }) {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://npftas.xyz";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.npftas.xyz";
   return (
     <JsonLd
       data={{
@@ -232,7 +232,7 @@ export function SoftwareApplicationJsonLd({
 }
 
 export function AboutPageJsonLd() {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://npftas.xyz";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.npftas.xyz";
   return (
     <JsonLd
       data={{
@@ -253,7 +253,7 @@ export function AboutPageJsonLd() {
 }
 
 export function ContactPageJsonLd() {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://npftas.xyz";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.npftas.xyz";
   return (
     <JsonLd
       data={{

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 const INDEXNOW_KEY = "e7df08b327297b7b1fdf14c1d29807337ffe3b58d36d4a11f552e820778dcced";
-const HOST = "npftas.xyz";
+const HOST = "www.npftas.xyz";
 
 // Search engines that support IndexNow
 const ENDPOINTS = [

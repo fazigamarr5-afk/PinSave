@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   },
   description: "Free Pinterest downloader — save videos, images, and GIFs in HD. No watermark, no login. Works on iPhone, Android, and PC. Download now.",
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL || "https://npftas.xyz"
+    process.env.NEXT_PUBLIC_SITE_URL || "https://www.npftas.xyz"
   ),
   openGraph: {
     type: "website",

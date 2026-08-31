@@ -181,7 +181,7 @@ export default async function BlogPostPage(props: BlogPostPageProps) {
         <div className="mt-10 flex items-center gap-3">
           <span className="text-sm font-medium text-surface-500 dark:text-surface-400">Share:</span>
           <a
-            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(`https://npftas.xyz/blog/${slug}`)}`}
+            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(`https://www.npftas.xyz/blog/${slug}`)}`}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-full bg-surface-100 dark:bg-surface-800 text-surface-600 dark:text-surface-400 hover:bg-surface-200 dark:hover:bg-surface-700 transition-colors"
@@ -192,7 +192,7 @@ export default async function BlogPostPage(props: BlogPostPageProps) {
             Twitter
           </a>
           <a
-            href={`https://reddit.com/submit?url=${encodeURIComponent(`https://npftas.xyz/blog/${slug}`)}&title=${encodeURIComponent(post.title)}`}
+            href={`https://reddit.com/submit?url=${encodeURIComponent(`https://www.npftas.xyz/blog/${slug}`)}&title=${encodeURIComponent(post.title)}`}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-full bg-surface-100 dark:bg-surface-800 text-surface-600 dark:text-surface-400 hover:bg-surface-200 dark:hover:bg-surface-700 transition-colors"
