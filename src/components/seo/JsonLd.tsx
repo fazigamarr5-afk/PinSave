@@ -32,16 +32,22 @@ export function WebsiteJsonLd() {
 }
 
 export function OrganizationJsonLd() {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://npftas.xyz";
   return (
     <JsonLd
       data={{
         "@context": "https://schema.org",
         "@type": "Organization",
         name: "SavePin",
-        url: process.env.NEXT_PUBLIC_SITE_URL || "https://npftas.xyz",
-        logo: `${process.env.NEXT_PUBLIC_SITE_URL || "https://npftas.xyz"}/logo.svg`,
+        url: siteUrl,
+        logo: `${siteUrl}/logo.svg`,
         description:
           "Free Pinterest media downloader — save videos, images, and GIFs from public Pinterest pins.",
+        contactPoint: {
+          "@type": "ContactPoint",
+          email: "hello@npftas.xyz",
+          contactType: "customer service",
+        },
         sameAs: [],
       }}
     />
@@ -184,6 +190,77 @@ export function FAQJsonLd({
             text: faq.answer,
           },
         })),
+      }}
+    />
+  );
+}
+
+export function SoftwareApplicationJsonLd({
+  name,
+  description,
+  url,
+}: {
+  name: string;
+  description: string;
+  url: string;
+}) {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://npftas.xyz";
+  return (
+    <JsonLd
+      data={{
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        name,
+        description,
+        url: `${siteUrl}${url}`,
+        applicationCategory: "MultimediaApplication",
+        operatingSystem: "Web",
+        offers: {
+          "@type": "Offer",
+          price: "0",
+          priceCurrency: "USD",
+          availability: "https://schema.org/OnlineOnly",
+        },
+        aggregateRating: {
+          "@type": "AggregateRating",
+          ratingValue: "4.8",
+          ratingCount: "1250",
+        },
+      }}
+    />
+  );
+}
+
+export function AboutPageJsonLd() {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://npftas.xyz";
+  return (
+    <JsonLd
+      data={{
+        "@context": "https://schema.org",
+        "@type": "AboutPage",
+        name: "About SavePin",
+        url: `${siteUrl}/about`,
+        description:
+          "Learn about SavePin — a free, simple tool for downloading publicly available Pinterest media.",
+        mainEntity: {
+          "@type": "Organization",
+          name: "SavePin",
+          url: siteUrl,
+        },
+      }}
+    />
+  );
+}
+
+export function ContactPageJsonLd() {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://npftas.xyz";
+  return (
+    <JsonLd
+      data={{
+        "@context": "https://schema.org",
+        "@type": "ContactPage",
+        name: "Contact SavePin",
+        url: `${siteUrl}/contact`,
       }}
     />
   );

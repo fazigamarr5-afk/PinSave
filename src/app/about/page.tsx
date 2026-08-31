@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Container } from "@/components/ui/Container";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
+import { AboutPageJsonLd } from "@/components/seo/JsonLd";
 
 export const metadata: Metadata = {
   title: "About",
@@ -11,6 +12,7 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <Container>
+      <AboutPageJsonLd />
       <div className="py-12 max-w-3xl">
         <Breadcrumbs items={[{ label: "About", href: "/about" }]} />
 

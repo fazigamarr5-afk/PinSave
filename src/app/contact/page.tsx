@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Container } from "@/components/ui/Container";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
+import { ContactPageJsonLd } from "@/components/seo/JsonLd";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -10,6 +11,7 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <Container>
+      <ContactPageJsonLd />
       <div className="py-12 max-w-3xl">
         <Breadcrumbs items={[{ label: "Contact", href: "/contact" }]} />
 
