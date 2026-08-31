@@ -19,29 +19,29 @@ import {
 
 const faqs = [
   {
-    question: "What video formats can I download?",
+    question: "What format does the video download in?",
     answer:
-      "SavePin downloads Pinterest videos in MP4 format, which is compatible with virtually all devices and media players.",
+      "MP4 — the most universal video format. Plays on iPhone, Android, Windows, Mac, and basically every device made after 2010.",
   },
   {
     question: "Does this work with Pinterest Reels?",
     answer:
-      "Yes. Pinterest Reels are a type of video content on Pinterest, and SavePin supports downloading them from public pins.",
+      "Yes. Reels, standard video pins, and idea pins all work. Just paste the URL.",
   },
   {
-    question: "Can I download videos from secret or private boards?",
+    question: "Can I download from private or secret boards?",
     answer:
-      "No. SavePin only works with publicly accessible pins. We cannot access private, secret, or restricted content.",
+      "No. We can only access publicly available pins. If you can view it without logging in, we can download it.",
   },
   {
-    question: "Why can't I download a particular video?",
+    question: "Why won't a particular video download?",
     answer:
-      "Some videos may be restricted by the original uploader, or the pin URL may be invalid. Make sure you're using a public pin URL.",
+      "Usually it's one of three things: the pin is private, the URL is wrong, or the uploader restricted downloads. Double-check that the pin is public and the URL looks like pinterest.com/pin/...",
   },
   {
-    question: "Is there a limit on video length?",
+    question: "Is there a file size or length limit?",
     answer:
-      "SavePin does not impose its own limits. However, very large videos may take longer to process depending on your connection.",
+      "No artificial limits from us. If Pinterest serves it, we can download it. Longer videos just take a bit more time to process.",
   },
 ];
 
@@ -98,9 +98,11 @@ export default function PinterestVideoDownloaderPage() {
           <h1 className="text-3xl sm:text-4xl font-bold text-surface-900 dark:text-white mb-4">
             Pinterest Video Downloader
           </h1>
-          <p className="text-surface-600 dark:text-surface-400 leading-relaxed mb-8">
-            Download videos and Reels from publicly available Pinterest pins.
-            Paste the pin URL and save the video to your device in MP4 format.
+          <p className="text-surface-600 dark:text-surface-400 leading-relaxed mb-2">
+            Found a video on Pinterest you want to keep? Paste the link above and save it in HD — no app, no account, no watermarks.
+          </p>
+          <p className="text-sm text-surface-400 dark:text-surface-500 mb-8">
+            Works with standard pins, Reels, and idea pins. Downloads as MP4 on any device.
           </p>
 
           {/* Tool */}

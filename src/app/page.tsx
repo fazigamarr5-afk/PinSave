@@ -47,16 +47,16 @@ const tools = [
 
 // Default content (used as fallback if DB is empty)
 const defaultSteps = [
-  { step: "1", title: "Copy the URL", description: "Find a public Pinterest pin and copy its URL from your browser." },
-  { step: "2", title: "Paste it here", description: "Paste the Pinterest URL into the input field above and click Download." },
-  { step: "3", title: "Save the file", description: "Choose the media you want and save it to your device." },
+  { step: "1", title: "Copy the link", description: "Find any public Pinterest pin and copy its URL from your browser or app." },
+  { step: "2", title: "Paste it here", description: "Paste the URL into the box above. We'll detect the video, image, or GIF automatically." },
+  { step: "3", title: "Save it", description: "Pick the quality you want and save it to your phone, tablet, or computer. Done." },
 ];
 
 const defaultFeatures = [
-  { title: "No signup", description: "Use the tools immediately without creating an account." },
-  { title: "Works on mobile", description: "Fully responsive — works on any device with a browser." },
-  { title: "Clean interface", description: "No clutter, no ads in the way. Just paste and download." },
-  { title: "Privacy first", description: "We don't store your URLs or downloaded files." },
+  { title: "Zero friction", description: "No signup, no app install, no waiting. Paste a link, get the file." },
+  { title: "Original quality", description: "We serve the file at the highest resolution Pinterest provides — up to 1080p." },
+  { title: "Works everywhere", description: "iPhone, Android, Windows, Mac — any device with a browser." },
+  { title: "Nothing stored", description: "Your URLs and files never touch our servers. We don't track you either." },
 ];
 
 const defaultFaqs = [
@@ -92,7 +92,7 @@ export default function HomePage() {
       .catch(() => {});
   }, []);
 
-  const hero = pageContent?.hero || { title: "Pinterest Video Downloader", subtitle: "Download videos, images, and GIFs from public Pinterest pins. Free, simple, and fast — no account required.", trustBadges: ["Free", "No account needed", "Simple to use"] };
+  const hero = pageContent?.hero || { title: "Save any Pinterest video, image, or GIF", subtitle: "Paste a Pinterest link. Get the file. No signup, no watermarks, no nonsense — works on every device.", trustBadges: ["100% free", "No account needed", "Up to 1080p quality"] };
   const howItWorksTitle = pageContent?.howItWorks?.title || "How It Works";
   const steps = pageContent?.howItWorks?.steps?.length ? pageContent.howItWorks.steps : defaultSteps;
   const featuresTitle = pageContent?.features?.title || "Why SavePin";

@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     default: "Pinterest Downloader — Download Videos, Images & GIFs Free | SavePin",
     template: "%s | SavePin",
   },
-  description: "Free Pinterest downloader — save videos, images, and GIFs in HD. No watermark, no login. Works on iPhone, Android, and PC. Download now.",
+  description: "Download Pinterest videos, images, and GIFs in HD — free, no signup, no watermarks. Works on iPhone, Android, and PC. Paste a link and save.",
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL || "https://www.npftas.xyz"
   ),
