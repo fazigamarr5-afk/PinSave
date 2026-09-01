@@ -11,6 +11,7 @@ interface Post {
   slug: string;
   status: string;
   published_at: string | null;
+  scheduled_at: string | null;
   created_at: string;
 }
 
@@ -22,7 +23,7 @@ export default function AdminPostsPage() {
     const supabase = createClient();
     supabase
       .from("posts")
-      .select("id, title, slug, status, published_at, created_at")
+      .select("id, title, slug, status, published_at, scheduled_at, created_at")
       .order("created_at", { ascending: false })
       .then(({ data }: { data: any }) => {
         setPosts(data || []);
@@ -80,10 +81,14 @@ export default function AdminPostsPage() {
                     className={
                       post.status === "published"
                         ? "text-green-600 dark:text-green-400"
-                        : "text-yellow-600 dark:text-yellow-400"
+                        : post.scheduled_at && new Date(post.scheduled_at) > new Date()
+                          ? "text-blue-600 dark:text-blue-400"
+                          : "text-yellow-600 dark:text-yellow-400"
                     }
                   >
-                    {post.status}
+                    {post.scheduled_at && new Date(post.scheduled_at) > new Date()
+                      ? `Scheduled: ${new Date(post.scheduled_at).toLocaleString()}`
+                      : post.status}
                   </span>
                   {post.published_at && (
                     <> · {new Date(post.published_at).toLocaleDateString()}</>

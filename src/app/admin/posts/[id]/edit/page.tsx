@@ -16,6 +16,7 @@ interface Post {
   status: string;
   seo_title: string | null;
   seo_description: string | null;
+  scheduled_at: string | null;
 }
 
 export default function EditPostPage() {
@@ -34,6 +35,7 @@ export default function EditPostPage() {
     seo_title: "",
     seo_description: "",
   });
+  const [scheduledAt, setScheduledAt] = useState("");
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -58,6 +60,11 @@ export default function EditPostPage() {
         seo_title: data.seo_title || "",
         seo_description: data.seo_description || "",
       });
+      // Pre-fill schedule if set
+      if (data.scheduled_at) {
+        const dt = new Date(data.scheduled_at);
+        setScheduledAt(dt.toISOString().slice(0, 16));
+      }
       setLoading(false);
     };
 
@@ -89,8 +96,14 @@ export default function EditPostPage() {
       updated_at: new Date().toISOString(),
     };
 
-    if (status) {
+    // Handle scheduling
+    const isScheduled = scheduledAt && new Date(scheduledAt) > new Date();
+    if (isScheduled) {
+      updates.status = "draft";
+      updates.scheduled_at = new Date(scheduledAt).toISOString();
+    } else if (status) {
       updates.status = status;
+      updates.scheduled_at = null; // Clear schedule if publishing now
       if (status === "published") {
         updates.published_at = new Date().toISOString();
       }
@@ -193,6 +206,28 @@ export default function EditPostPage() {
           <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
         )}
 
+        <div>
+          <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5">
+            Schedule for Later (optional)
+          </label>
+          <input
+            type="datetime-local"
+            value={scheduledAt}
+            onChange={(e) => setScheduledAt(e.target.value)}
+            min={new Date().toISOString().slice(0, 16)}
+            className="w-full rounded-lg border border-surface-200 bg-white px-3 py-2 text-sm text-surface-900 placeholder:text-surface-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent dark:border-surface-700 dark:bg-surface-900 dark:text-white dark:placeholder:text-surface-500"
+          />
+          {scheduledAt && (
+            <p className="mt-1 text-xs text-brand-600 dark:text-brand-400">
+              Post will auto-publish on {new Date(scheduledAt).toLocaleString()}
+            </p>
+          )}
+        </div>
+
+        {error && (
+          <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+        )}
+
         <div className="flex gap-3 pt-4">
           <Button
             onClick={() => handleSave()}
@@ -204,9 +239,15 @@ export default function EditPostPage() {
           <Button onClick={() => handleSave("draft")} loading={saving} variant="secondary">
             Save as Draft
           </Button>
-          <Button onClick={() => handleSave("published")} loading={saving}>
-            Publish
-          </Button>
+          {scheduledAt ? (
+            <Button onClick={() => handleSave("draft")} loading={saving}>
+              Schedule Post
+            </Button>
+          ) : (
+            <Button onClick={() => handleSave("published")} loading={saving}>
+              Publish
+            </Button>
+          )}
         </div>
       </div>
     </div>
